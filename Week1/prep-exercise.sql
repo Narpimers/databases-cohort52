@@ -43,10 +43,3 @@ CREATE TABLE recipe_steps (
   FOREIGN KEY (step_id) REFERENCES steps(step_id)
 );
 
-
-Which entities can you spot in the above problem ?
-answer: Recipe, Ingredient, Step etc...
-Which tables do you need to create to store the above data?
-recipes: to store data about recipe, ingredients: to store data about ingredient, steps: to describe each step;
-What are the relationships between those entities?
-recipe_ingredients one recipe can have multiple ingredients and recipe_steps can have multiple steps and one step can be used in multiple recipes.
