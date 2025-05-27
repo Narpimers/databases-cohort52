@@ -2,9 +2,9 @@ import mysql from 'mysql2/promise';
 
 // Create the connection to database
 const connection = await mysql.createConnection({
-  host: 'localhost',
-  user: 'hyfuser',
-  password: 'hyfpassword'
+    host: 'localhost',
+    user: 'hyfuser',
+    password: 'hyfpassword'
 });
 
 connection.connect();
@@ -12,10 +12,10 @@ connection.connect();
 try {
     await connection.query('CREATE DATABASE IF NOT EXISTS meetup');
     await connection.query('USE meetup');
-    await connection.query('CREATE TABLE Invitee (invitee_no INT NOT NULL PRIMARY KEY, invitee_name VARCHAR(25) NOT NULL, invited_by VARCHAR(25))');
-    await connection.query('CREATE TABLE Room (room_no INT NOT NULL PRIMARY KEY, room_name VARCHAR(25) NOT NULL, floor_number INT NOT NULL)');
-    await connection.query('CREATE TABLE Meeting (meeting_no INT NOT NULL PRIMARY KEY, meeting_title VARCHAR(40) NOT NULL, staring_time DATETIME, ending_time DATETIME, room_no INT NOT NULL)');
-    
+    await connection.query('CREATE TABLE Invitee (invitee_no INT PRIMARY KEY AUTO_INCREMENT, invitee_name VARCHAR(25) NOT NULL, invited_by VARCHAR(25))');
+    await connection.query('CREATE TABLE Room (room_no INT PRIMARY KEY AUTO_INCREMENT, room_name VARCHAR(25) NOT NULL, floor_number TINYINT NOT NULL)');
+    await connection.query('CREATE TABLE Meeting (meeting_no INT PRIMARY KEY AUTO_INCREMENT, meeting_title VARCHAR(40) NOT NULL, staring_time DATETIME, ending_time DATETIME, room_no INT NOT NULL)');
+
     await connection.query('INSERT INTO Invitee VALUES (1, "Ilias Khugaev", "Ilia Bubnov")');
     await connection.query('INSERT INTO Invitee VALUES (2, "Anna Petrova", "Ilias Khugaev")');
     await connection.query('INSERT INTO Invitee VALUES (3, "Dmitry Sokolov", "Anna Petrova")');
@@ -35,7 +35,7 @@ try {
     await connection.query('INSERT INTO Meeting VALUES (5, "Retrospective", "2025-05-21 16:00:00", "2025-05-21 17:00:00", 5)');
 
 } catch (error) {
-     console.log(error);
+    console.log(error);
 }
 
 connection.end();
