@@ -9,6 +9,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "epic_todolist": "file:",
     "faker": "^4.1.0",
     "knex": "^2.4.0",
     "mysql": "^2.18.1",
