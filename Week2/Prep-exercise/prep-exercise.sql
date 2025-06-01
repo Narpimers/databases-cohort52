@@ -43,14 +43,6 @@ CREATE TABLE recipe_steps (
   FOREIGN KEY (step_id) REFERENCES steps(step_id)
 );
 
-CREATE TABLE recipe_steps (
-  recipe_id INT,
-  step_id INT,
-  step_order INT,
-  PRIMARY KEY (recipe_id, step_id),
-  FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
-  FOREIGN KEY (step_id) REFERENCES steps(step_id)
-);
 
 CREATE TABLE categories (
   categories_id INT AUTO_INCREMENT PRIMARY KEY,
@@ -59,8 +51,8 @@ CREATE TABLE categories (
 
 CREATE TABLE categories_recipes (
   recipe_id INT,
-  categori_id INT,
-  PRIMARY KEY (recipe_id, categori_id),
+  category_id INT,
+  PRIMARY KEY (recipe_id, category_id),
   FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
-  FOREIGN KEY (categori_id) REFERENCES categories(categories_id)
+  FOREIGN KEY (category_id) REFERENCES categories(categories_id)
 );
