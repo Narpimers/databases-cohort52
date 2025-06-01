@@ -56,3 +56,10 @@ CREATE TABLE categories_recipes (
   FOREIGN KEY (recipe_id) REFERENCES recipes(recipe_id),
   FOREIGN KEY (category_id) REFERENCES categories(categories_id)
 );
+
+-- 1. Was your database already in 2NF / 3 NF?  Yes, it was.
+
+-- 2. What changes did you have to do to normalize your database? Nothing.
+
+-- 3. If you want to add thousands of recipes to your database, what challenges do you foresee? 
+-- Each recipe needs many ingredients, steps, and categories — resulting in many queries and it takes a lot of time...
