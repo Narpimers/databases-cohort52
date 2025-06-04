@@ -11,3 +11,4 @@ prompt.get(['username', 'email'], function (err, result) {
     console.log('  email: ' + result.email);
     }
     );
+
