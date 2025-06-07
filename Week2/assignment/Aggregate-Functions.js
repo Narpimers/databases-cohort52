@@ -8,10 +8,9 @@ const connection = await mysql.createConnection({
 
 
 export const aggreg = async() => {
-    connection.query("SELECT paper_title, COUNT(author_id) AS author_count FROM  research_papers GROUP BY paper_title");
-    connection.query("SELECT COUNT(research_papers.paper_id) FROM research_papers INNER JOIN authors on authors.author_id = research_papers.author_id  WHERE authors.gender = 'female'");
-    connection.query("SELECT university,  FROM authors GROUP BY university");
-    connection.query("SELECT university, COUNT(paper_id) FROM authors GROUP BY university");
+    connection.query("SELECT rp.paper_id,rp.paper_title, COUNT(ap.author_id) AS number_of_authors FROM   research_papers rp LEFT JOIN  author_papers ap ON rp.paper_id = ap.paper_id GROUP BY   rp.paper_id, rp.paper_title");
+    connection.query("SELECT COUNT(ap.paper_id) AS total_papers_by_female_authors FROM  authors a JOIN author_papers ap ON a.author_id = ap.author_id  a.gender = 'female';");
+    connection.query("SELECT AVG(h_index) AS avg_h_index FROM authors GROUP BY university");
+    connection.query("SELECT a.university, COUNT(ap.paper_id) AS total_papers FROM authors a JOIN author_papers ap ON a.author_id = ap.author_id GROUP BY a.university");
     connection.query("SELECT university, MIN(h_index), MAX(h_index) FROM authors GROUP BY university");
-
 };
