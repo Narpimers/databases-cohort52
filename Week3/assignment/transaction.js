@@ -19,7 +19,8 @@ try {
     `);
     await connection.query(`COMMIT`);
 } catch (err) {
-    console.log(err);
+    console.error("Transaction failed, rolling back:", err);
+    await connection.query(`ROLLBACK`);
 } finally {
     connection.end();
 }

@@ -11,14 +11,15 @@ async function createEpisodeExercise(client) {
    * elements: ["CIRRUS", "CLOUDS", "CONIFER", "DECIDIOUS", "GRASS", "MOUNTAIN", "MOUNTAINS", "RIVER", "SNOWY_MOUNTAIN", "TREE", "TREES"]
    */
 
-  // Write code that will add this to the collection!
-  const  doc = {
-        episode: "S09E13",
-        title: "MOUNTAIN HIDE-AWAY",
-        elements: ["CIRRUS", "CLOUDS", "CONIFER", "DECIDIOUS", "GRASS", "MOUNTAIN", "MOUNTAINS", "RIVER", "SNOWY_MOUNTAIN", "TREE", "TREES"]
-  };
+  const dataBaseName = 'databaseWeek3';
+  const collectionName = 'bob_ross_episodes';
 
-  const result = await client.db('databaseWeek3').collection('bob_ross_episodes').insertOne({doc});
+  // Write code that will add this to the collection!
+  const result = await client.db(dataBaseName).collection(collectionName).insertOne({
+    episode: "S09E13",
+    title: "MOUNTAIN HIDE-AWAY",
+    elements: ["CIRRUS", "CLOUDS", "CONIFER", "DECIDIOUS", "GRASS", "MOUNTAIN", "MOUNTAINS", "RIVER", "SNOWY_MOUNTAIN", "TREE", "TREES"]
+  });
   console.log(
     `Created season 9 episode 13 and the document got the id ${result.insertedId}`
   );
@@ -27,20 +28,20 @@ async function createEpisodeExercise(client) {
 async function findEpisodesExercises(client) {
   const doc = {episode: "S02E02"};
 
-  const result = await client.db('databaseWeek3').collection('bob_ross_episodes').findOne(doc);
+  const result = await client.db(dataBaseName).collection(collectionName).findOne(doc);
 
   console.log(
     `The title of episode 2 in season 2 is ${result.title}`
   );
 
   // Find the season and episode number of the episode called "BLACK RIVER" [Should be: S02E06]
-  const result1 = await client.db('databaseWeek3').collection('bob_ross_episodes').findOne({ title: "BLACK RIVER"});
+  const result1 = await client.db(dataBaseName).collection(collectionName).findOne({ title: "BLACK RIVER"});
   console.log(
     `The season and episode number of the "BLACK RIVER" episode is ${result1.episode}`
   );
 
   // Find all of the episode titles where Bob Ross painted a CLIFF [Should be: NIGHT LIGHT, EVENING SEASCAPE, SURF'S UP, CLIFFSIDE, BY THE SEA, DEEP WILDERNESS HOME, CRIMSON TIDE, GRACEFUL WATERFALL]
-  const result2 = await client.db('databaseWeek3').collection('bob_ross_episodes').find({ elements: "CLIFF"});
+  const result2 = await client.db(dataBaseName).collection(collectionName).find({ elements: "CLIFF"});
   const allCLIFFEpisodes = [];
   for await (const doc of result2) {
     allCLIFFEpisodes.push(doc.title);
@@ -50,11 +51,9 @@ async function findEpisodesExercises(client) {
   );
 
   // Find all of the episode titles where Bob Ross painted a CLIFF and a LIGHTHOUSE [Should be: NIGHT LIGHT]
-  const result3 = await client.db('databaseWeek3').collection('bob_ross_episodes').find({ elements: { $all: ["CLIFF", "LIGHTHOUSE"] } });
-  const allCLIFFandLIGHTHOUSEEpisodes = [];
-  for await (const doc of result3) {
-    allCLIFFandLIGHTHOUSEEpisodes.push(doc.title);
-  }
+  const result3 = await client.db(dataBaseName).collection(collectionName).find({ elements: { $all: ["CLIFF", "LIGHTHOUSE"] } }.toArray());
+
+  const allCLIFFandLIGHTHOUSEEpisodes = result3.map(doc => doc.title);
 
   console.log(
     `The episodes that Bob Ross painted a CLIFF and a LIGHTHOUSE are ${allCLIFFandLIGHTHOUSEEpisodes.join(', ')}`
@@ -76,7 +75,7 @@ async function updateEpisodeExercises(client) {
     },
   };
 
-  const result = await client.db('databaseWeek3').collection('bob_ross_episodes').updateOne({episode: "S30E13"}, updateDoc);
+  const result = await client.db(dataBaseName).collection(collectionName).updateOne({episode: "S30E13"}, updateDoc);
 
   console.log(
     `Ran a command to update episode 13 in season 30 and it updated ${result.modifiedCount} episodes`
@@ -86,7 +85,12 @@ async function updateEpisodeExercises(client) {
   // Update all of the documents in the collection that have `BUSHES` in the elements array to now have `BUSH`
   // It should update 120 episodes!
 
-  const result2 = await client.db('databaseWeek3').collection('bob_ross_episodes').updateMany({elements: "BUSHES"}, { $set: {elements: "BUSH"}});
+  const result2 = await client
+      .db(dataBaseName)
+      .collection(collectionName)
+      .updateMany(
+          { elements: "BUSHES" }, [{$set: {elements: {$map: {input: "$elements", as: "el", in: {$cond: [{ $eq: ["$$el", "BUSHES"] }, "BUSH", "$$el"]}}}}}]
+      );
 
   console.log(
     `Ran a command to update all the BUSHES to BUSH and it updated ${result2.modifiedCount} episodes`
@@ -101,7 +105,7 @@ async function deleteEpisodeExercise(client) {
 
   const doc = {episode: "S31E14"};
 
-  const result = await client.db('databaseWeek3').collection('bob_ross_episodes').deleteOne(doc);
+  const result = await client.db(dataBaseName).collection(collectionName).deleteOne(doc);
 
   console.log(
     `Ran a command to delete episode and it deleted ${result.deletedCount} episodes`
